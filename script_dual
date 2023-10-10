@@ -12,7 +12,7 @@ pki --self --type priv --in caKeyRSA.pem --ca --lifetime 3652 \
 # Create a self-signed certificate for the second CA using the PQC key pair
 pki --self --type priv --in caKeyPQC.pem --ca --lifetime 3652 \
     --dn "C=CH, O=Cyber, CN=Cyber Root CA PQC"                  \
-    --outform pem > caCertPQC.pem
+    --outform pem > caCert.pem
 
 # Generate a key pair for the entity (e.g., moon) using another PQC algorithm (e.g., dilithium5)
 pki --gen --type dilithium5 --outform pem > moonKey.pem
@@ -29,7 +29,26 @@ pki --issue --cacert caCertPQC.pem --cakey caKeyPQC.pem   \
     --dn "C=CH, O=Cyber, CN=moon.strongswan.org"    \
     --san moon.strongswan.org --outform pem > moonCertPQC.pem
 
+# Generate a key pair for Carol using a PQC algorithm (e.g., dilithium5)
+pki --gen --type dilithium5 --outform pem > carolKey.pem
+
+# Issue a certificate for Carol using the RSA CA
+pki --issue --cacert caCertRSA.pem --cakey caKeyRSA.pem   \
+    --type priv --in carolKey.pem --lifetime 1461 \
+    --dn "C=CH, O=Cyber, CN=carol.strongswan.org"    \
+    --san carol.strongswan.org --outform pem > carolCertRSA.pem
+
+# Issue a certificate for Carol using the PQC CA
+pki --issue --cacert caCertPQC.pem --cakey caKeyPQC.pem   \
+    --type priv --in carolKey.pem --lifetime 1461 \
+    --dn "C=CH, O=Cyber, CN=carol.strongswan.org"    \
+    --san carol.strongswan.org --outform pem > carolCertPQC.pem
+
+# Concatenate the two certificates to create a double signature for Carol
+cat carolCertRSA.pem carolCertPQC.pem > carolCert.pem
+
+
 # Concatenate the two certificates to create a double signature for the entity
-cat moonCertRSA.pem moonCertPQC.pem > moonDoubleCert.pem
+cat moonCertRSA.pem moonCertPQC.pem > moonCert.pem
 
 
