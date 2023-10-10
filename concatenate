@@ -1,0 +1,16 @@
+# Generate a traditional RSA key pair for the CA
+pki --gen --type rsa --size 2048 --outform pem > caKeyRSA.pem
+
+# Create a self-signed certificate for the CA using the RSA key pair
+pki --self --type priv --in caKeyRSA.pem --ca --lifetime 3652 \
+    --dn "C=CH, O=Cyber, CN=Cyber Root CA"                  \
+    --outform pem > caCertRSA.pem
+
+# Generate a PQC key pair (e.g., falcon1024) for the entity
+pki --gen --type falcon1024 --outform pem > entityKeyPQC.pem
+
+# Issue a certificate for the entity using the PQC key pair and the RSA CA
+pki --issue --cacert caCertRSA.pem --cakey caKeyRSA.pem   \
+    --type priv --in entityKeyPQC.pem --lifetime 1461 \
+    --dn "C=CH, O=Cyber, CN=entity.strongswan.org"    \
+    --san entity.strongswan.org --outform pem > entityCertPQC.pem
