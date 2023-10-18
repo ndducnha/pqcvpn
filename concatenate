@@ -19,7 +19,7 @@ pki --issue --cacert caCert.pem --cakey caKey.pem --type priv --in moonKey.pem -
 pki --issue --cacert caCertRSA.pem --cakey caKeyRSA.pem --type priv --in moonKeyRSA.pem --lifetime 1461 --dn "C=CH, O=Cyber, CN=moon.strongswan.org RSA" --san moon.strongswan.org --outform pem > moonCertRSA.pem
 
 # Concatenate the PQC and RSA certificates for moon
-cat moonCert.pem moonCertRSA.pem > moonDoubleCert.pem
+cat moonCert.pem moonCertRSA.pem > moonCert.pem
 
 # Generate the PQC Key for carol
 pki --gen --type dilithium5 --outform pem > carolKey.pem
@@ -34,4 +34,4 @@ pki --issue --cacert caCert.pem --cakey caKey.pem --type priv --in carolKey.pem 
 pki --issue --cacert caCertRSA.pem --cakey caKeyRSA.pem --type priv --in carolKeyRSA.pem --lifetime 1461 --dn "C=CH, O=Cyber, CN=carol@strongswan.org RSA" --san carol@strongswan.org --outform pem > carolCertRSA.pem
 
 # Concatenate the PQC and RSA certificates for carol
-cat carolCert.pem carolCertRSA.pem > carolDoubleCert.pem
+cat carolCert.pem carolCertRSA.pem > carolCert.pem
